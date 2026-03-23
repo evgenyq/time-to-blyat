@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Time to Блять™ — A Self-Study in Developer Rage</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0f;
+  --bg2: #12121a;
+  --bg3: #1a1a25;
+  --card: #14141f;
+  --border: #2a2a3a;
+  --text: #e0e0e8;
+  --text-dim: #8888a0;
+  --red: #ff4444;
+  --red-glow: #ff444440;
+  --orange: #ff8c42;
+  --orange-glow: #ff8c4240;
+  --yellow: #ffd166;
+  --green: #06d6a0;
+  --green-glow: #06d6a040;
+  --blue: #4ea8de;
+  --purple: #b388ff;
+  --pink: #ff6b9d;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+.grain {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.03;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, var(--red-glow) 0%, transparent 70%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  animation: pulse-glow 4s ease-in-out infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.1); }
+}
+
+.hero-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  padding: 6px 16px;
+  border-radius: 20px;
+  margin-bottom: 32px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 {
+  font-size: clamp(48px, 8vw, 96px);
+  font-weight: 900;
+  line-height: 1.05;
+  position: relative;
+  z-index: 1;
+}
+
+.hero h1 .time { color: var(--text); }
+.hero h1 .to { color: var(--text-dim); font-weight: 300; }
+.hero h1 .blyat {
+  background: linear-gradient(135deg, var(--red), var(--orange));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero h1 .tm {
+  font-size: 0.3em;
+  vertical-align: super;
+  color: var(--text-dim);
+  -webkit-text-fill-color: var(--text-dim);
+}
+
+.hero-subtitle {
+  font-size: 18px;
+  color: var(--text-dim);
+  margin-top: 16px;
+  position: relative;
+  z-index: 1;
+  font-weight: 300;
+}
+
+.hero-number {
+  position: relative;
+  z-index: 1;
+  margin-top: 48px;
+}
+
+.hero-number .number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(80px, 15vw, 160px);
+  font-weight: 800;
+  color: var(--red);
+  line-height: 1;
+  text-shadow: 0 0 60px var(--red-glow), 0 0 120px var(--red-glow);
+  animation: flicker 3s ease-in-out infinite;
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.8; }
+  94% { opacity: 1; }
+  96% { opacity: 0.7; }
+  97% { opacity: 1; }
+}
+
+.hero-number .unit {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 24px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  display: block;
+  margin-top: 8px;
+}
+
+.hero-number .label {
+  font-size: 14px;
+  color: var(--text-dim);
+  margin-top: 8px;
+}
+
+.scroll-hint {
+  position: absolute;
+  bottom: 40px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-dim);
+  animation: bob 2s ease-in-out infinite;
+  opacity: 0.5;
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(8px); }
+}
+
+/* ── SECTIONS ── */
+section {
+  padding: 80px 0;
+}
+
+.section-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 12px;
+}
+
+.section-heading {
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 800;
+  margin-bottom: 40px;
+  line-height: 1.2;
+}
+
+/* ── STAT CARDS ── */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 60px;
+}
+
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  border-color: #3a3a4a;
+}
+
+.stat-card .stat-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 36px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.stat-card .stat-label {
+  font-size: 14px;
+  color: var(--text-dim);
+}
+
+.stat-card .stat-emoji {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 24px;
+  opacity: 0.7;
+}
+
+.stat-card.zen .stat-value { color: var(--green); }
+.stat-card.rage .stat-value { color: var(--red); }
+.stat-card.trauma .stat-value { color: var(--orange); }
+.stat-card.total .stat-value { color: var(--blue); }
+
+/* ── BAR CHART ── */
+.chart-container {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 40px;
+}
+
+.chart-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 24px;
+}
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.bar-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: var(--text-dim);
+  min-width: 100px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.bar-track {
+  flex: 1;
+  height: 32px;
+  background: var(--bg);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding-left: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--bg);
+  transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+  width: 0;
+}
+
+.bar-fill.animated { /* width set by JS */ }
+
+.bar-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 8px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.bar-tag.speed { background: var(--red); color: #fff; }
+.bar-tag.slow { background: var(--blue); color: #fff; }
+.bar-tag.carry { background: var(--orange); color: #000; }
+
+/* ── RAGE SCALE ── */
+.rage-scale {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 40px;
+}
+
+.rage-level {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 0 16px;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.2s;
+}
+
+.rage-level:last-child { border-bottom: none; }
+.rage-level:hover { background: #ffffff06; }
+
+.rage-level .count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  font-weight: 700;
+  min-width: 40px;
+  text-align: center;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.rage-level .words {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.rage-level .translation {
+  font-size: 13px;
+  color: var(--text-dim);
+  font-style: italic;
+  text-align: right;
+}
+
+.rage-level .dots {
+  display: flex;
+  gap: 3px;
+}
+
+.rage-level .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: dot-pulse 2s ease-in-out infinite;
+}
+
+@keyframes dot-pulse {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.rage-level.l1 .count { background: #2a4a3a; color: var(--green); }
+.rage-level.l1 .words { color: var(--green); }
+.rage-level.l1 .dot { background: var(--green); }
+
+.rage-level.l2 .count { background: #3a4a2a; color: var(--yellow); }
+.rage-level.l2 .words { color: var(--yellow); }
+.rage-level.l2 .dot { background: var(--yellow); }
+
+.rage-level.l3 .count { background: #4a3a2a; color: var(--orange); }
+.rage-level.l3 .words { color: var(--orange); }
+.rage-level.l3 .dot { background: var(--orange); }
+
+.rage-level.l4 .count { background: #4a2a2a; color: var(--red); }
+.rage-level.l4 .words { color: var(--red); }
+.rage-level.l4 .dot { background: var(--red); }
+
+.rage-level.l5 .count { background: #4a1a2a; color: var(--pink); }
+.rage-level.l5 .words { color: var(--pink); }
+.rage-level.l5 .dot { background: var(--pink); }
+
+.most-common {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  background: var(--red);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+/* ── TRIGGERS ── */
+.triggers-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+@media (max-width: 700px) {
+  .triggers-grid { grid-template-columns: 1fr; }
+}
+
+.trigger-item {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: transform 0.2s;
+}
+
+.trigger-item:hover { transform: translateY(-1px); }
+
+.trigger-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--red);
+  min-width: 48px;
+  text-align: center;
+}
+
+.trigger-name {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.trigger-bar {
+  height: 3px;
+  background: var(--red);
+  border-radius: 2px;
+  margin-top: 6px;
+  opacity: 0.5;
+}
+
+/* ── HALL OF FAME ── */
+.hall-of-fame {
+  margin-bottom: 40px;
+}
+
+.quote-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--red);
+  border-radius: 0 12px 12px 0;
+  padding: 24px 28px;
+  margin-bottom: 16px;
+  position: relative;
+  transition: border-color 0.3s, transform 0.2s;
+}
+
+.quote-card:hover {
+  border-left-color: var(--orange);
+  transform: translateX(4px);
+}
+
+.quote-card .rank {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.quote-card .quote-text {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.quote-card .quote-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  color: var(--text-dim);
+}
+
+.quote-card:nth-child(1) .quote-text { color: var(--red); }
+.quote-card:nth-child(2) .quote-text { color: var(--orange); }
+.quote-card:nth-child(3) .quote-text { color: var(--yellow); }
+
+/* ── CALENDAR HEATMAP ── */
+.calendar {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 40px;
+}
+
+.cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-top: 16px;
+}
+
+.cal-header {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  text-align: center;
+  padding-bottom: 8px;
+}
+
+.cal-day {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  position: relative;
+  transition: transform 0.2s;
+  border: 1px solid transparent;
+}
+
+.cal-day.empty { background: transparent; }
+.cal-day.calm { background: var(--bg); color: var(--text-dim); }
+.cal-day.hot1 { background: #2a1a1a; color: var(--orange); border-color: #3a2a2a; }
+.cal-day.hot2 { background: #3a1a1a; color: var(--red); border-color: #4a2a2a; }
+.cal-day.hot3 { background: #4a1515; color: #ff6666; border-color: var(--red); box-shadow: 0 0 20px var(--red-glow); }
+
+.cal-day:hover:not(.empty) { transform: scale(1.1); z-index: 1; }
+
+.cal-day .cal-badge {
+  font-size: 9px;
+  margin-top: 2px;
+}
+
+.cal-tooltip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 6px 10px;
+  font-size: 11px;
+  white-space: nowrap;
+  z-index: 10;
+  color: var(--text);
+}
+
+.cal-day:hover .cal-tooltip { display: block; }
+
+/* ── PROJECT BAR ── */
+.project-bars {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 32px;
+  margin-bottom: 40px;
+}
+
+.proj-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  gap: 16px;
+}
+
+.proj-name {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  min-width: 140px;
+  text-align: right;
+  color: var(--text-dim);
+}
+
+.proj-bar {
+  height: 28px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding-left: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 700;
+  transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
+  width: 0;
+}
+
+.proj-row:nth-child(1) .proj-bar { background: var(--red); color: #fff; }
+.proj-row:nth-child(2) .proj-bar { background: var(--orange); color: #000; }
+.proj-row:nth-child(3) .proj-bar { background: var(--yellow); color: #000; }
+.proj-row:nth-child(4) .proj-bar { background: var(--blue); color: #000; }
+
+/* ── FOOTER ── */
+.footer {
+  text-align: center;
+  padding: 60px 24px 80px;
+  border-top: 1px solid var(--border);
+}
+
+.footer .pattern {
+  font-size: 18px;
+  font-weight: 500;
+  max-width: 700px;
+  margin: 0 auto 24px;
+  line-height: 1.8;
+}
+
+.footer .pattern .stage1 { color: var(--green); }
+.footer .pattern .stage2 { color: var(--yellow); }
+.footer .pattern .stage3 { color: var(--orange); }
+.footer .pattern .stage4 { color: var(--red); }
+.footer .arrow { color: var(--text-dim); }
+
+.footer .disclaimer {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 32px;
+  opacity: 0.5;
+}
+
+/* ── SCROLL ANIMATIONS ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  .stat-grid { grid-template-columns: 1fr 1fr; }
+  .bar-label { min-width: 70px; font-size: 11px; }
+  .rage-level { grid-template-columns: auto 1fr auto; }
+  .rage-level .translation { display: none; }
+  .proj-name { min-width: 100px; font-size: 12px; }
+  .quote-card .quote-text { font-size: 16px; }
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<!-- ████ HERO ████ -->
+<div class="hero">
+  <div class="hero-badge">Analytics Report • Feb 23 – Mar 23, 2026</div>
+  <h1>
+    <span class="time">Time</span> <span class="to">to</span><br>
+    <span class="blyat">Блять</span><span class="tm">™</span>
+  </h1>
+  <p class="hero-subtitle">A Self-Study in Developer Rage</p>
+  <div class="hero-number">
+    <div class="number" id="hero-counter">25</div>
+    <span class="unit">MINUTES</span>
+    <span class="label">median time from session start to first profanity</span>
+  </div>
+  <div class="scroll-hint">↓ scroll for the damage report</div>
+</div>
+
+<!-- ████ OVERVIEW STATS ████ -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-title">01 — Overview</div>
+      <div class="section-heading">The Numbers Don't Lie</div>
+    </div>
+    <div class="stat-grid reveal">
+      <div class="stat-card total">
+        <span class="stat-emoji">📊</span>
+        <div class="stat-value">100</div>
+        <div class="stat-label">sessions analyzed</div>
+      </div>
+      <div class="stat-card zen">
+        <span class="stat-emoji">🧘</span>
+        <div class="stat-value">77%</div>
+        <div class="stat-label">Zen mode (calm)</div>
+      </div>
+      <div class="stat-card rage">
+        <span class="stat-emoji">😤</span>
+        <div class="stat-value">23%</div>
+        <div class="stat-label">Rage mode (frustrated)</div>
+      </div>
+      <div class="stat-card trauma">
+        <span class="stat-emoji">💀</span>
+        <div class="stat-value">4</div>
+        <div class="stat-label">Carry-over trauma<br><small style="color:#666">(started already angry)</small></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ████ FRUSTRATION CURVE ████ -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-title">02 — Timing</div>
+      <div class="section-heading">The Frustration Curve</div>
+    </div>
+    <div class="chart-container reveal" id="time-chart">
+      <div class="chart-title">How fast does the rage arrive?</div>
+
+      <div class="bar-row">
+        <div class="bar-label">0–10 min</div>
+        <div class="bar-track">
+          <div class="bar-fill" data-width="100%" style="background: var(--red);">8</div>
+        </div>
+        <span class="bar-tag speed">⚡ Speed Run</span>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">10–20 min</div>
+        <div class="bar-track">
+          <div class="bar-fill" data-width="12.5%" style="background: var(--orange);">1</div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">20–30 min</div>
+        <div class="bar-track">
+          <div class="bar-fill" data-width="12.5%" style="background: var(--orange);">1</div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">30–45 min</div>
+        <div class="bar-track">
+          <div class="bar-fill" data-width="50%" style="background: var(--yellow);">4</div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">45–60 min</div>
+        <div class="bar-track">
+          <div class="bar-fill" data-width="37.5%" style="background: var(--yellow);">3</div>
+        </div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">60–90 min</div>
+        <div class="bar-track">
+          <div class="bar-fill" data-width="25%" style="background: var(--blue);">2</div>
+        </div>
+        <span class="bar-tag slow">🐌 Slow Burn</span>
+      </div>
+      <div class="bar-row">
+        <div class="bar-label">@ start</div>
+        <div class="bar-track">
+          <div class="bar-fill" data-width="50%" style="background: var(--purple);">4</div>
+        </div>
+        <span class="bar-tag carry">😤 Carry-over</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ████ RAGE SCALE ████ -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-title">03 — Intensity</div>
+      <div class="section-heading">The Richter Scale of Rage</div>
+    </div>
+    <div class="rage-scale reveal">
+
+      <div class="rage-level l1">
+        <div class="count">4x</div>
+        <div class="words">"блин"</div>
+        <div class="translation">Hmm, that's not ideal</div>
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      </div>
+
+      <div class="rage-level l1">
+        <div class="count">2x</div>
+        <div class="words">"ну это же..."</div>
+        <div class="translation">Did you even read my message?</div>
+        <div class="dots"><div class="dot"></div><div class="dot"></div></div>
+      </div>
+
+      <div class="rage-level l2">
+        <div class="count">1x</div>
+        <div class="words">"опять"</div>
+        <div class="translation">We've been through this</div>
+        <div class="dots"><div class="dot"></div></div>
+      </div>
+
+      <div class="rage-level l3">
+        <div class="count" style="position:relative">9x<span class="most-common">MOST COMMON</span></div>
+        <div class="words">"бля / чувак"</div>
+        <div class="translation">Are you serious right now?</div>
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      </div>
+
+      <div class="rage-level l3">
+        <div class="count">1x</div>
+        <div class="words">"я очень разочарован"</div>
+        <div class="translation">I'm done with this session</div>
+        <div class="dots"><div class="dot"></div></div>
+      </div>
+
+      <div class="rage-level l4">
+        <div class="count">3x</div>
+        <div class="words">"какого хера"</div>
+        <div class="translation">What the actual...</div>
+        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      </div>
+
+      <div class="rage-level l4">
+        <div class="count">2x</div>
+        <div class="words">"блять / пиздец"</div>
+        <div class="translation">Nuclear option activated</div>
+        <div class="dots"><div class="dot"></div><div class="dot"></div></div>
+      </div>
+
+      <div class="rage-level l5">
+        <div class="count">1x</div>
+        <div class="words">"НУ ПОЧЕМУУУУУ????"</div>
+        <div class="translation">🔥 Keyboard in danger 🔥</div>
+        <div class="dots"><div class="dot" style="width:12px;height:12px;animation-duration:0.5s"></div></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ████ TRIGGERS ████ -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-title">04 — Root Cause Analysis</div>
+      <div class="section-heading">What Sets Me Off</div>
+    </div>
+    <div class="triggers-grid reveal">
+      <div class="trigger-item">
+        <div class="trigger-count">6</div>
+        <div>
+          <div class="trigger-name">Build failures / broken code / regressions</div>
+          <div class="trigger-bar" style="width: 100%;"></div>
+        </div>
+      </div>
+      <div class="trigger-item">
+        <div class="trigger-count">5</div>
+        <div>
+          <div class="trigger-name">AI ignoring explicit instructions</div>
+          <div class="trigger-bar" style="width: 83%;"></div>
+        </div>
+      </div>
+      <div class="trigger-item">
+        <div class="trigger-count">5</div>
+        <div>
+          <div class="trigger-name">Other / combo triggers</div>
+          <div class="trigger-bar" style="width: 83%;"></div>
+        </div>
+      </div>
+      <div class="trigger-item">
+        <div class="trigger-count">4</div>
+        <div>
+          <div class="trigger-name">Permission prompts hell 🔁</div>
+          <div class="trigger-bar" style="width: 67%;"></div>
+        </div>
+      </div>
+      <div class="trigger-item">
+        <div class="trigger-count">1</div>
+        <div>
+          <div class="trigger-name">AI not searching web when asked</div>
+          <div class="trigger-bar" style="width: 17%;"></div>
+        </div>
+      </div>
+      <div class="trigger-item">
+        <div class="trigger-count">1</div>
+        <div>
+          <div class="trigger-name">AI losing context / forgetting</div>
+          <div class="trigger-bar" style="width: 17%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ████ HALL OF FAME ████ -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-title">05 — Hall of Fame</div>
+      <div class="section-heading">Greatest Hits 💀</div>
+    </div>
+    <div class="hall-of-fame reveal">
+      <div class="quote-card">
+        <div class="rank">🥇 Peak Rage — Mar 15, shelly-monitor</div>
+        <div class="quote-text">"НУ ПОЧЕМУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУ????"</div>
+        <div class="quote-meta">Context: permission prompts meltdown, session 65, minute 46 • Caps lock: yes • У count: 40+</div>
+      </div>
+      <div class="quote-card">
+        <div class="rank">🥈 Existential Crisis — Mar 20, atlantisplus</div>
+        <div class="quote-text">"блять чувак, а что случилось, почему ты такой тупой стал?"</div>
+        <div class="quote-meta">Context: AI couldn't understand test purpose after 80 min of work • Trust level: zero</div>
+      </div>
+      <div class="quote-card">
+        <div class="rank">🥉 Bilingual Rage — Mar 23, atlantisplus</div>
+        <div class="quote-text">"it's fucking not funny anymore, ну серьёзно!!!"</div>
+        <div class="quote-meta">Context: hours stuck on step 1 of test scenario • Language barrier: transcended</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ████ CALENDAR ████ -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-title">06 — Calendar</div>
+      <div class="section-heading">March 2026 — Heatmap of Pain</div>
+    </div>
+    <div class="calendar reveal">
+      <div class="cal-grid">
+        <div class="cal-header">Mon</div>
+        <div class="cal-header">Tue</div>
+        <div class="cal-header">Wed</div>
+        <div class="cal-header">Thu</div>
+        <div class="cal-header">Fri</div>
+        <div class="cal-header">Sat</div>
+        <div class="cal-header">Sun</div>
+
+        <!-- Week 1: Mar 1 = Sun -->
+        <div class="cal-day empty"></div>
+        <div class="cal-day empty"></div>
+        <div class="cal-day empty"></div>
+        <div class="cal-day empty"></div>
+        <div class="cal-day empty"></div>
+        <div class="cal-day empty"></div>
+        <div class="cal-day calm">1</div>
+
+        <!-- Week 2 -->
+        <div class="cal-day calm">2</div>
+        <div class="cal-day calm">3</div>
+        <div class="cal-day calm">4</div>
+        <div class="cal-day calm">5</div>
+        <div class="cal-day calm">6</div>
+        <div class="cal-day calm">7</div>
+        <div class="cal-day calm">8</div>
+
+        <!-- Week 3 -->
+        <div class="cal-day calm">9<div class="cal-tooltip">1 frustrated session</div></div>
+        <div class="cal-day calm">10</div>
+        <div class="cal-day calm">11</div>
+        <div class="cal-day calm">12</div>
+        <div class="cal-day hot1">13<div class="cal-badge">×2</div><div class="cal-tooltip">2 frustrated sessions</div></div>
+        <div class="cal-day hot1">14<div class="cal-badge">×2</div><div class="cal-tooltip">2 frustrated sessions</div></div>
+        <div class="cal-day hot3">15<div class="cal-badge">×6 🔥</div><div class="cal-tooltip">6 frustrated sessions — "Permission Hell"</div></div>
+
+        <!-- Week 4 -->
+        <div class="cal-day calm">16</div>
+        <div class="cal-day calm">17</div>
+        <div class="cal-day calm">18</div>
+        <div class="cal-day hot1">19<div class="cal-badge">×2</div><div class="cal-tooltip">2 frustrated sessions</div></div>
+        <div class="cal-day hot2">20<div class="cal-badge">×3</div><div class="cal-tooltip">3 frustrated sessions — test debugging</div></div>
+        <div class="cal-day calm">21<div class="cal-tooltip">1 frustrated session</div></div>
+        <div class="cal-day calm">22</div>
+
+        <!-- Week 5 -->
+        <div class="cal-day hot2">23<div class="cal-badge">×3 ⚡</div><div class="cal-tooltip">3 frustrated sessions — "still going"</div></div>
+        <div class="cal-day calm" style="opacity:0.3">24</div>
+        <div class="cal-day calm" style="opacity:0.3">25</div>
+        <div class="cal-day calm" style="opacity:0.3">26</div>
+        <div class="cal-day calm" style="opacity:0.3">27</div>
+        <div class="cal-day calm" style="opacity:0.3">28</div>
+        <div class="cal-day calm" style="opacity:0.3">29</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ████ BY PROJECT ████ -->
+<section>
+  <div class="container">
+    <div class="reveal">
+      <div class="section-title">07 — By Project</div>
+      <div class="section-heading">Where The Pain Lives</div>
+    </div>
+    <div class="project-bars reveal" id="proj-chart">
+      <div class="proj-row">
+        <div class="proj-name">atlantisplus</div>
+        <div class="proj-bar" data-width="100%">15</div>
+      </div>
+      <div class="proj-row">
+        <div class="proj-name">shelly-monitor</div>
+        <div class="proj-bar" data-width="27%">4</div>
+      </div>
+      <div class="proj-row">
+        <div class="proj-name">metadispatch</div>
+        <div class="proj-bar" data-width="20%">3</div>
+      </div>
+      <div class="proj-row">
+        <div class="proj-name">Projects</div>
+        <div class="proj-bar" data-width="7%">1</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ████ FOOTER ████ -->
+<div class="footer">
+  <div class="reveal">
+    <div class="section-title" style="margin-bottom:24px">The Pattern™</div>
+    <div class="pattern">
+      <span class="stage1">Work calmly for 25 min</span>
+      <span class="arrow"> → </span>
+      something breaks
+      <span class="arrow"> → </span>
+      <span class="stage2">"блин"</span>
+      <span class="arrow"> → </span>
+      5 min later
+      <span class="arrow"> → </span>
+      <span class="stage3">"бля"</span>
+      <span class="arrow"> → </span>
+      5 more min
+      <span class="arrow"> → </span>
+      <span class="stage4">full мат</span>
+      <span class="arrow"> → </span>
+      repeat.
+    </div>
+    <div class="disclaimer">
+      Generated by the very AI that caused 23% of these sessions.<br>
+      No keyboards were harmed in the making of this report. Probably.
+    </div>
+  </div>
+</div>
+
+<script>
+// ── Scroll reveal ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.classList.add('visible');
+      // Animate bars when chart becomes visible
+      if (e.target.id === 'time-chart' || e.target.id === 'proj-chart') {
+        e.target.querySelectorAll('[data-width]').forEach((bar, i) => {
+          setTimeout(() => {
+            bar.style.width = bar.dataset.width;
+          }, i * 100);
+        });
+      }
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.reveal, #time-chart, #proj-chart').forEach(el => observer.observe(el));
+
+// ── Hero counter animation ──
+const counter = document.getElementById('hero-counter');
+let start = 0;
+const end = 25;
+const duration = 2000;
+const startTime = performance.now();
+
+function animateCounter(now) {
+  const elapsed = now - startTime;
+  const progress = Math.min(elapsed / duration, 1);
+  const eased = 1 - Math.pow(1 - progress, 3);
+  counter.textContent = Math.round(eased * end);
+  if (progress < 1) requestAnimationFrame(animateCounter);
+}
+requestAnimationFrame(animateCounter);
+
+// ── Subtle parallax on hero ──
+document.addEventListener('mousemove', (e) => {
+  const hero = document.querySelector('.hero');
+  if (!hero) return;
+  const rect = hero.getBoundingClientRect();
+  if (rect.bottom < 0) return;
+  const x = (e.clientX / window.innerWidth - 0.5) * 20;
+  const y = (e.clientY / window.innerHeight - 0.5) * 20;
+  hero.querySelector('.hero-number').style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
+});
+</script>
+</body>
+</html>
