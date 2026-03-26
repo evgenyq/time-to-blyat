@@ -3,27 +3,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Time to Блять™ — A Self-Study in Developer Rage</title>
+<title>Time to Блять™ — Developer Rage Analytics</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700;800&family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
   --bg: #0a0a0f;
-  --bg2: #12121a;
-  --bg3: #1a1a25;
   --card: #14141f;
   --border: #2a2a3a;
   --text: #e0e0e8;
   --text-dim: #8888a0;
   --red: #ff4444;
-  --red-glow: #ff444440;
   --orange: #ff8c42;
-  --orange-glow: #ff8c4240;
   --yellow: #ffd166;
   --green: #06d6a0;
-  --green-glow: #06d6a040;
   --blue: #4ea8de;
   --purple: #b388ff;
   --pink: #ff6b9d;
@@ -37,144 +33,175 @@ body {
   font-family: 'Inter', -apple-system, sans-serif;
   line-height: 1.6;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
 }
 
+/* Film grain overlay */
 .grain {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  inset: 0;
   pointer-events: none;
   z-index: 9999;
   opacity: 0.03;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* Layout */
 .container {
   max-width: 1100px;
   margin: 0 auto;
   padding: 0 24px;
 }
 
-/* ── HERO ── */
+/* Section reveal */
+.section {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+  padding: 80px 0;
+}
+
+.section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.section-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(28px, 4vw, 40px);
+  font-weight: 800;
+  margin-bottom: 40px;
+  color: var(--text);
+}
+
+/* ===================== HERO ===================== */
 .hero {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   text-align: center;
   position: relative;
   overflow: hidden;
+  padding: 40px 24px;
 }
 
 .hero::before {
   content: '';
   position: absolute;
-  width: 600px; height: 600px;
-  background: radial-gradient(circle, var(--red-glow) 0%, transparent 70%);
-  top: 50%; left: 50%;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 68, 68, 0.12) 0%, transparent 70%);
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
   animation: pulse-glow 4s ease-in-out infinite;
 }
 
 @keyframes pulse-glow {
-  0%, 100% { opacity: 0.3; transform: translate(-50%, -50%) scale(1); }
-  50% { opacity: 0.6; transform: translate(-50%, -50%) scale(1.1); }
+  0%, 100% { opacity: 0.6; transform: translate(-50%, -50%) scale(1); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1.15); }
 }
 
 .hero-badge {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
+  font-size: 11px;
   letter-spacing: 3px;
   text-transform: uppercase;
   color: var(--text-dim);
   border: 1px solid var(--border);
   padding: 6px 16px;
   border-radius: 20px;
-  margin-bottom: 32px;
+  margin-bottom: 40px;
   position: relative;
   z-index: 1;
 }
 
 .hero h1 {
+  font-family: 'JetBrains Mono', monospace;
   font-size: clamp(48px, 8vw, 96px);
   font-weight: 900;
-  line-height: 1.05;
+  line-height: 0.95;
+  letter-spacing: -2px;
   position: relative;
   z-index: 1;
+  margin-bottom: 16px;
 }
 
-.hero h1 .time { color: var(--text); }
-.hero h1 .to { color: var(--text-dim); font-weight: 300; }
-.hero h1 .blyat {
-  background: linear-gradient(135deg, var(--red), var(--orange));
+.hero h1 span {
+  background: linear-gradient(135deg, var(--red), var(--pink));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
-.hero h1 .tm {
-  font-size: 0.3em;
-  vertical-align: super;
-  color: var(--text-dim);
-  -webkit-text-fill-color: var(--text-dim);
-}
 
 .hero-subtitle {
-  font-size: 18px;
+  font-size: clamp(14px, 2.5vw, 18px);
   color: var(--text-dim);
-  margin-top: 16px;
+  font-weight: 300;
+  margin-bottom: 48px;
   position: relative;
   z-index: 1;
-  font-weight: 300;
 }
 
 .hero-number {
   position: relative;
   z-index: 1;
-  margin-top: 48px;
+  margin-bottom: 48px;
 }
 
 .hero-number .number {
   font-family: 'JetBrains Mono', monospace;
   font-size: clamp(80px, 15vw, 160px);
   font-weight: 800;
-  color: var(--red);
   line-height: 1;
-  text-shadow: 0 0 60px var(--red-glow), 0 0 120px var(--red-glow);
-  animation: flicker 3s ease-in-out infinite;
-}
-
-@keyframes flicker {
-  0%, 100% { opacity: 1; }
-  92% { opacity: 1; }
-  93% { opacity: 0.8; }
-  94% { opacity: 1; }
-  96% { opacity: 0.7; }
-  97% { opacity: 1; }
+  background: linear-gradient(135deg, var(--orange), var(--red));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 .hero-number .unit {
+  display: block;
   font-family: 'JetBrains Mono', monospace;
   font-size: 24px;
-  color: var(--text-dim);
   letter-spacing: 2px;
-  display: block;
-  margin-top: 8px;
+  color: var(--text-dim);
+  margin-top: 4px;
 }
 
 .hero-number .label {
-  font-size: 14px;
+  display: block;
+  font-size: 13px;
   color: var(--text-dim);
-  margin-top: 8px;
+  max-width: 320px;
+  margin: 12px auto 0;
+  line-height: 1.5;
 }
 
 .scroll-hint {
-  position: absolute;
-  bottom: 40px;
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
   color: var(--text-dim);
-  animation: bob 2s ease-in-out infinite;
   opacity: 0.5;
+  position: relative;
+  z-index: 1;
+  animation: bob 2s ease-in-out infinite;
 }
 
 @keyframes bob {
@@ -182,33 +209,11 @@ body {
   50% { transform: translateY(8px); }
 }
 
-/* ── SECTIONS ── */
-section {
-  padding: 80px 0;
-}
-
-.section-title {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 12px;
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  color: var(--text-dim);
-  margin-bottom: 12px;
-}
-
-.section-heading {
-  font-size: clamp(28px, 4vw, 40px);
-  font-weight: 800;
-  margin-bottom: 40px;
-  line-height: 1.2;
-}
-
-/* ── STAT CARDS ── */
-.stat-grid {
+/* ===================== STAT CARDS ===================== */
+.stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 16px;
-  margin-bottom: 60px;
 }
 
 .stat-card {
@@ -216,14 +221,13 @@ section {
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 24px;
-  position: relative;
-  overflow: hidden;
-  transition: transform 0.2s, border-color 0.2s;
+  text-align: center;
+  transition: border-color 0.3s ease, transform 0.3s ease;
 }
 
 .stat-card:hover {
+  border-color: var(--text-dim);
   transform: translateY(-2px);
-  border-color: #3a3a4a;
 }
 
 .stat-card .stat-value {
@@ -239,39 +243,12 @@ section {
   color: var(--text-dim);
 }
 
-.stat-card .stat-emoji {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  font-size: 24px;
-  opacity: 0.7;
-}
-
-.stat-card.zen .stat-value { color: var(--green); }
-.stat-card.rage .stat-value { color: var(--red); }
-.stat-card.trauma .stat-value { color: var(--orange); }
-.stat-card.total .stat-value { color: var(--blue); }
-
-/* ── BAR CHART ── */
-.chart-container {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 32px;
-  margin-bottom: 40px;
-}
-
-.chart-title {
-  font-size: 20px;
-  font-weight: 700;
-  margin-bottom: 24px;
-}
-
+/* ===================== BAR CHART ===================== */
 .bar-row {
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
   gap: 12px;
+  margin-bottom: 10px;
 }
 
 .bar-label {
@@ -286,244 +263,263 @@ section {
 .bar-track {
   flex: 1;
   height: 32px;
-  background: var(--bg);
+  background: rgba(255,255,255,0.03);
   border-radius: 6px;
-  position: relative;
   overflow: hidden;
+  position: relative;
 }
 
 .bar-fill {
   height: 100%;
   border-radius: 6px;
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: flex;
   align-items: center;
-  padding-left: 12px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--bg);
-  transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
-  width: 0;
+  padding-left: 10px;
 }
 
-.bar-fill.animated { /* width set by JS */ }
+.bar-count {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(0,0,0,0.8);
+  white-space: nowrap;
+}
 
 .bar-tag {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
-  padding: 2px 8px;
-  border-radius: 4px;
-  margin-left: 8px;
-  white-space: nowrap;
+  color: var(--text-dim);
+  min-width: 100px;
   flex-shrink: 0;
+  padding-left: 8px;
 }
 
-.bar-tag.speed { background: var(--red); color: #fff; }
-.bar-tag.slow { background: var(--blue); color: #fff; }
-.bar-tag.carry { background: var(--orange); color: #000; }
+@media (max-width: 600px) {
+  .bar-label { min-width: 70px; font-size: 11px; }
+  .bar-tag { display: none; }
+}
 
-/* ── RAGE SCALE ── */
-.rage-scale {
+/* ===================== RAGE SCALE TABLE ===================== */
+.rage-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 6px;
+}
+
+.rage-row {
   background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 32px;
-  margin-bottom: 40px;
+  transition: transform 0.3s ease;
 }
 
-.rage-level {
-  display: grid;
-  grid-template-columns: auto 1fr auto auto;
-  gap: 0 16px;
-  align-items: center;
-  padding: 14px 0;
-  border-bottom: 1px solid var(--border);
-  transition: background 0.2s;
+.rage-row:hover {
+  transform: translateX(4px);
 }
 
-.rage-level:last-child { border-bottom: none; }
-.rage-level:hover { background: #ffffff06; }
+.rage-row td {
+  padding: 14px 16px;
+  vertical-align: middle;
+}
 
-.rage-level .count {
+.rage-row td:first-child {
+  border-radius: 8px 0 0 8px;
+  width: 40px;
+  text-align: center;
+}
+
+.rage-row td:last-child {
+  border-radius: 0 8px 8px 0;
+}
+
+.level-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+  display: inline-block;
+}
+
+.count-badge {
   font-family: 'JetBrains Mono', monospace;
   font-size: 14px;
   font-weight: 700;
   min-width: 40px;
-  text-align: center;
   padding: 4px 8px;
   border-radius: 6px;
+  display: inline-block;
+  text-align: center;
 }
 
-.rage-level .words {
+.expression {
   font-family: 'JetBrains Mono', monospace;
   font-size: 15px;
   font-weight: 600;
 }
 
-.rage-level .translation {
+.translation {
   font-size: 13px;
   color: var(--text-dim);
   font-style: italic;
-  text-align: right;
 }
 
-.rage-level .dots {
-  display: flex;
-  gap: 3px;
-}
-
-.rage-level .dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  animation: dot-pulse 2s ease-in-out infinite;
-}
-
-@keyframes dot-pulse {
-  0%, 100% { opacity: 0.6; }
-  50% { opacity: 1; }
-}
-
-.rage-level.l1 .count { background: #2a4a3a; color: var(--green); }
-.rage-level.l1 .words { color: var(--green); }
-.rage-level.l1 .dot { background: var(--green); }
-
-.rage-level.l2 .count { background: #3a4a2a; color: var(--yellow); }
-.rage-level.l2 .words { color: var(--yellow); }
-.rage-level.l2 .dot { background: var(--yellow); }
-
-.rage-level.l3 .count { background: #4a3a2a; color: var(--orange); }
-.rage-level.l3 .words { color: var(--orange); }
-.rage-level.l3 .dot { background: var(--orange); }
-
-.rage-level.l4 .count { background: #4a2a2a; color: var(--red); }
-.rage-level.l4 .words { color: var(--red); }
-.rage-level.l4 .dot { background: var(--red); }
-
-.rage-level.l5 .count { background: #4a1a2a; color: var(--pink); }
-.rage-level.l5 .words { color: var(--pink); }
-.rage-level.l5 .dot { background: var(--pink); }
-
-.most-common {
+.most-common-badge {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 10px;
-  letter-spacing: 1px;
-  background: var(--red);
-  color: #fff;
-  padding: 2px 8px;
-  border-radius: 4px;
+  font-size: 9px;
+  background: var(--orange);
+  color: #000;
+  padding: 2px 6px;
+  border-radius: 3px;
   margin-left: 8px;
+  font-weight: 700;
+  letter-spacing: 1px;
   vertical-align: middle;
 }
 
-/* ── TRIGGERS ── */
+.dots {
+  display: flex;
+  gap: 3px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* ===================== TRIGGER CARDS ===================== */
 .triggers-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 40px;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 12px;
 }
 
-@media (max-width: 700px) {
-  .triggers-grid { grid-template-columns: 1fr; }
-}
-
-.trigger-item {
+.trigger-card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: 10px;
   padding: 20px;
   display: flex;
   align-items: center;
   gap: 16px;
-  transition: transform 0.2s;
+  transition: border-color 0.3s ease, transform 0.3s ease;
 }
 
-.trigger-item:hover { transform: translateY(-1px); }
+.trigger-card:hover {
+  border-color: var(--text-dim);
+  transform: translateY(-2px);
+}
 
 .trigger-count {
   font-family: 'JetBrains Mono', monospace;
   font-size: 28px;
-  font-weight: 800;
-  color: var(--red);
-  min-width: 48px;
+  font-weight: 700;
+  flex-shrink: 0;
+  width: 48px;
   text-align: center;
+}
+
+.trigger-info {
+  flex: 1;
+  min-width: 0;
 }
 
 .trigger-name {
   font-size: 14px;
   font-weight: 500;
+  margin-bottom: 6px;
 }
 
-.trigger-bar {
-  height: 3px;
-  background: var(--red);
+.trigger-bar-track {
+  height: 4px;
+  background: rgba(255,255,255,0.05);
   border-radius: 2px;
-  margin-top: 6px;
-  opacity: 0.5;
+  overflow: hidden;
 }
 
-/* ── HALL OF FAME ── */
-.hall-of-fame {
-  margin-bottom: 40px;
+.trigger-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  width: 0;
+  transition: width 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+/* ===================== HALL OF FAME ===================== */
 .quote-card {
   background: var(--card);
   border: 1px solid var(--border);
-  border-left: 3px solid var(--red);
-  border-radius: 0 12px 12px 0;
-  padding: 24px 28px;
+  border-radius: 12px;
+  padding: 28px 28px 28px 32px;
   margin-bottom: 16px;
+  border-left: 4px solid var(--border);
+  transition: transform 0.3s ease, border-color 0.3s ease;
   position: relative;
-  transition: border-color 0.3s, transform 0.2s;
 }
 
 .quote-card:hover {
-  border-left-color: var(--orange);
   transform: translateX(4px);
 }
 
-.quote-card .rank {
+.quote-card.gold { border-left-color: #ffd700; }
+.quote-card.gold:hover { border-left-color: #ffec80; }
+.quote-card.silver { border-left-color: #c0c0c0; }
+.quote-card.silver:hover { border-left-color: #e0e0e0; }
+.quote-card.bronze { border-left-color: #cd7f32; }
+.quote-card.bronze:hover { border-left-color: #e0a060; }
+.quote-card.honorable { border-left-color: var(--border); }
+.quote-card.honorable:hover { border-left-color: var(--text-dim); }
+
+.quote-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.quote-medal {
+  font-size: 20px;
+}
+
+.quote-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.quote-meta {
   font-family: 'JetBrains Mono', monospace;
   font-size: 11px;
   color: var(--text-dim);
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 8px;
 }
 
-.quote-card .quote-text {
+.quote-text {
+  font-family: 'JetBrains Mono', monospace;
   font-size: 20px;
   font-weight: 600;
   line-height: 1.4;
+  color: var(--red);
   margin-bottom: 12px;
+  word-break: break-word;
 }
 
-.quote-card .quote-meta {
-  font-family: 'JetBrains Mono', monospace;
+.quote-context {
   font-size: 12px;
   color: var(--text-dim);
+  line-height: 1.5;
 }
 
-.quote-card:nth-child(1) .quote-text { color: var(--red); }
-.quote-card:nth-child(2) .quote-text { color: var(--orange); }
-.quote-card:nth-child(3) .quote-text { color: var(--yellow); }
-
-/* ── CALENDAR HEATMAP ── */
-.calendar {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 32px;
-  margin-bottom: 40px;
-}
-
-.cal-grid {
+/* ===================== CALENDAR ===================== */
+.calendar-grid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   gap: 6px;
-  margin-top: 16px;
+  max-width: 560px;
 }
 
 .cal-header {
@@ -531,7 +527,8 @@ section {
   font-size: 11px;
   color: var(--text-dim);
   text-align: center;
-  padding-bottom: 8px;
+  padding: 4px 0 8px;
+  letter-spacing: 1px;
 }
 
 .cal-day {
@@ -544,563 +541,706 @@ section {
   font-family: 'JetBrains Mono', monospace;
   font-size: 13px;
   position: relative;
-  transition: transform 0.2s;
+  cursor: default;
+  transition: transform 0.2s ease;
   border: 1px solid transparent;
 }
 
-.cal-day.empty { background: transparent; }
-.cal-day.calm { background: var(--bg); color: var(--text-dim); }
-.cal-day.hot1 { background: #2a1a1a; color: var(--orange); border-color: #3a2a2a; }
-.cal-day.hot2 { background: #3a1a1a; color: var(--red); border-color: #4a2a2a; }
-.cal-day.hot3 { background: #4a1515; color: #ff6666; border-color: var(--red); box-shadow: 0 0 20px var(--red-glow); }
-
-.cal-day:hover:not(.empty) { transform: scale(1.1); z-index: 1; }
-
-.cal-day .cal-badge {
-  font-size: 9px;
-  margin-top: 2px;
+.cal-day:hover:not(.empty) {
+  transform: scale(1.1);
+  z-index: 2;
 }
 
-.cal-tooltip {
-  display: none;
+.cal-day .day-num {
+  font-weight: 500;
+  line-height: 1;
+}
+
+.cal-day .day-count {
+  font-size: 9px;
+  margin-top: 2px;
+  opacity: 0.7;
+}
+
+.cal-day.empty {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.cal-day.outside {
+  opacity: 0.25;
+}
+
+.cal-day.calm {
+  background: rgba(255,255,255,0.03);
+  color: var(--text-dim);
+}
+
+.cal-day.hot1 {
+  background: rgba(255, 68, 68, 0.15);
+  color: var(--text);
+  border-color: rgba(255, 68, 68, 0.2);
+}
+
+.cal-day.hot2 {
+  background: rgba(255, 68, 68, 0.3);
+  color: #fff;
+  border-color: rgba(255, 68, 68, 0.4);
+}
+
+.cal-day.hot3 {
+  background: rgba(255, 68, 68, 0.5);
+  color: #fff;
+  border-color: rgba(255, 68, 68, 0.7);
+  box-shadow: 0 0 16px rgba(255, 68, 68, 0.3);
+}
+
+.cal-day .fire {
+  font-size: 10px;
+  position: absolute;
+  top: -2px;
+  right: -2px;
+}
+
+.cal-day .tooltip {
   position: absolute;
   bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  background: var(--bg3);
+  background: #1a1a2e;
   border: 1px solid var(--border);
   border-radius: 6px;
   padding: 6px 10px;
   font-size: 11px;
   white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
   z-index: 10;
-  color: var(--text);
 }
 
-.cal-day:hover .cal-tooltip { display: block; }
-
-/* ── PROJECT BAR ── */
-.project-bars {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 32px;
-  margin-bottom: 40px;
+.cal-day:hover .tooltip {
+  opacity: 1;
 }
 
-.proj-row {
+.cal-month-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--text-dim);
+  grid-column: 1 / -1;
+  padding: 8px 0 4px;
+  letter-spacing: 1px;
+}
+
+/* ===================== PROJECT BARS ===================== */
+.project-row {
   display: flex;
   align-items: center;
-  margin-bottom: 16px;
   gap: 16px;
+  margin-bottom: 12px;
 }
 
-.proj-name {
+.project-name {
   font-family: 'JetBrains Mono', monospace;
   font-size: 14px;
   min-width: 140px;
   text-align: right;
-  color: var(--text-dim);
+  flex-shrink: 0;
+  color: var(--text);
 }
 
-.proj-bar {
+.project-track {
+  flex: 1;
   height: 28px;
+  background: rgba(255,255,255,0.03);
   border-radius: 6px;
+  overflow: hidden;
+  position: relative;
+}
+
+.project-fill {
+  height: 100%;
+  border-radius: 6px;
+  width: 0;
+  transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   display: flex;
   align-items: center;
   padding-left: 12px;
+}
+
+.project-count {
   font-family: 'JetBrains Mono', monospace;
   font-size: 13px;
   font-weight: 700;
-  transition: width 1.5s cubic-bezier(0.22, 1, 0.36, 1);
-  width: 0;
+  color: rgba(0,0,0,0.8);
 }
 
-.proj-row:nth-child(1) .proj-bar { background: var(--red); color: #fff; }
-.proj-row:nth-child(2) .proj-bar { background: var(--orange); color: #000; }
-.proj-row:nth-child(3) .proj-bar { background: var(--yellow); color: #000; }
-.proj-row:nth-child(4) .proj-bar { background: var(--blue); color: #000; }
-
-/* ── FOOTER ── */
-.footer {
-  text-align: center;
-  padding: 60px 24px 80px;
-  border-top: 1px solid var(--border);
-}
-
-.footer .pattern {
-  font-size: 18px;
-  font-weight: 500;
-  max-width: 700px;
-  margin: 0 auto 24px;
-  line-height: 1.8;
-}
-
-.footer .pattern .stage1 { color: var(--green); }
-.footer .pattern .stage2 { color: var(--yellow); }
-.footer .pattern .stage3 { color: var(--orange); }
-.footer .pattern .stage4 { color: var(--red); }
-.footer .arrow { color: var(--text-dim); }
-
-.footer .disclaimer {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  color: var(--text-dim);
-  margin-top: 32px;
-  opacity: 0.5;
-}
-
-/* ── SCROLL ANIMATIONS ── */
-.reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.8s ease, transform 0.8s ease;
-}
-
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* ── RESPONSIVE ── */
 @media (max-width: 600px) {
-  .stat-grid { grid-template-columns: 1fr 1fr; }
-  .bar-label { min-width: 70px; font-size: 11px; }
-  .rage-level { grid-template-columns: auto 1fr auto; }
-  .rage-level .translation { display: none; }
-  .proj-name { min-width: 100px; font-size: 12px; }
-  .quote-card .quote-text { font-size: 16px; }
+  .project-name { min-width: 100px; font-size: 11px; }
+}
+
+/* ===================== FOOTER / PATTERN ===================== */
+.pattern-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  line-height: 2;
+  margin-bottom: 48px;
+}
+
+.pattern-step {
+  padding: 4px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  white-space: nowrap;
+}
+
+.pattern-arrow {
+  color: var(--text-dim);
+}
+
+.disclaimer {
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-dim);
+  max-width: 640px;
+  margin: 0 auto;
+  line-height: 1.7;
+  padding-bottom: 60px;
+}
+
+/* ===================== MOBILE ===================== */
+@media (max-width: 600px) {
+  .container { padding: 0 16px; }
+  .section { padding: 48px 0; }
+  .hero h1 { letter-spacing: -1px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .triggers-grid { grid-template-columns: 1fr; }
+  .quote-card { padding: 20px 20px 20px 24px; }
+  .calendar-grid { gap: 3px; }
+  .cal-day { font-size: 10px; }
+  .rage-table { font-size: 12px; }
+  .rage-row td { padding: 10px 8px; }
+  .pattern-flow { font-size: 11px; }
+  .quote-text { font-size: 16px; }
+  .project-name { min-width: 100px; font-size: 12px; }
 }
 </style>
 </head>
 <body>
-<div class="grain"></div>
 
-<!-- ████ HERO ████ -->
-<div class="hero">
-  <div class="hero-badge">Analytics Report • Feb 23 – Mar 23, 2026</div>
-  <h1>
-    <span class="time">Time</span> <span class="to">to</span><br>
-    <span class="blyat">Блять</span><span class="tm">™</span>
-  </h1>
+<!-- Film grain overlay -->
+<svg class="grain" xmlns="http://www.w3.org/2000/svg">
+  <filter id="grain-filter">
+    <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/>
+    <feColorMatrix type="saturate" values="0"/>
+  </filter>
+  <rect width="100%" height="100%" filter="url(#grain-filter)"/>
+</svg>
+
+<!-- ==================== HERO ==================== -->
+<div class="hero" id="hero">
+  <div class="hero-badge">Analytics Report &bull; Feb 24 &ndash; Mar 26, 2026</div>
+  <h1>Time to<br><span>&#1041;&#1083;&#1103;&#1090;&#1100;&trade;</span></h1>
   <p class="hero-subtitle">A Self-Study in Developer Rage</p>
   <div class="hero-number">
-    <div class="number" id="hero-counter">25</div>
+    <div class="number" id="hero-counter">0</div>
     <span class="unit">MINUTES</span>
     <span class="label">median time from session start to first profanity</span>
   </div>
-  <div class="scroll-hint">↓ scroll for the damage report</div>
+  <div class="scroll-hint">&darr; scroll for the damage report</div>
 </div>
 
-<!-- ████ OVERVIEW STATS ████ -->
-<section>
-  <div class="container">
-    <div class="reveal">
-      <div class="section-title">01 — Overview</div>
-      <div class="section-heading">The Numbers Don't Lie</div>
+<!-- ==================== 01 — OVERVIEW ==================== -->
+<div class="section container" id="sec-overview">
+  <div class="section-label">01 &mdash; Overview</div>
+  <div class="section-title">The Numbers Don't Lie</div>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-value" style="color: var(--text)">117</div>
+      <div class="stat-label">Sessions Analyzed</div>
     </div>
-    <div class="stat-grid reveal">
-      <div class="stat-card total">
-        <span class="stat-emoji">📊</span>
-        <div class="stat-value">100</div>
-        <div class="stat-label">sessions analyzed</div>
+    <div class="stat-card">
+      <div class="stat-value" style="color: var(--green)">74%</div>
+      <div class="stat-label">Zen Mode</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="color: var(--red)">26%</div>
+      <div class="stat-label">Rage Mode</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-value" style="color: var(--purple)">12</div>
+      <div class="stat-label">Carry-Over Trauma</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 02 — TIMING ==================== -->
+<div class="section container" id="sec-timing">
+  <div class="section-label">02 &mdash; Timing</div>
+  <div class="section-title">How Fast Does The Rage Arrive?</div>
+
+  <div class="bar-chart" id="frustration-chart">
+    <div class="bar-row">
+      <div class="bar-label">@ start</div>
+      <div class="bar-track"><div class="bar-fill" data-width="75" style="background: var(--purple)"><span class="bar-count">6</span></div></div>
+      <div class="bar-tag">&#x1F624; Carry-over</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">1 &ndash; 10 min</div>
+      <div class="bar-track"><div class="bar-fill" data-width="100" style="background: var(--red)"><span class="bar-count">8</span></div></div>
+      <div class="bar-tag">&#x26A1; Speed Run</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">10 &ndash; 20 min</div>
+      <div class="bar-track"><div class="bar-fill" data-width="12.5" style="background: var(--orange)"><span class="bar-count">1</span></div></div>
+      <div class="bar-tag"></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">20 &ndash; 30 min</div>
+      <div class="bar-track"><div class="bar-fill" data-width="12.5" style="background: var(--yellow)"><span class="bar-count">1</span></div></div>
+      <div class="bar-tag"></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">30 &ndash; 45 min</div>
+      <div class="bar-track"><div class="bar-fill" data-width="62.5" style="background: var(--yellow)"><span class="bar-count">5</span></div></div>
+      <div class="bar-tag"></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">45 &ndash; 60 min</div>
+      <div class="bar-track"><div class="bar-fill" data-width="37.5" style="background: var(--blue)"><span class="bar-count">3</span></div></div>
+      <div class="bar-tag"></div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">60 &ndash; 90 min</div>
+      <div class="bar-track"><div class="bar-fill" data-width="50" style="background: var(--blue)"><span class="bar-count">4</span></div></div>
+      <div class="bar-tag">&#x1F40C; Slow Burn</div>
+    </div>
+    <div class="bar-row">
+      <div class="bar-label">90+ min</div>
+      <div class="bar-track"><div class="bar-fill" data-width="37.5" style="background: var(--green)"><span class="bar-count">3</span></div></div>
+      <div class="bar-tag">&#x1F9D8; Monk Mode... then snap</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== 03 — RAGE SCALE ==================== -->
+<div class="section container" id="sec-rage">
+  <div class="section-label">03 &mdash; Intensity</div>
+  <div class="section-title">The Richter Scale of Rage</div>
+
+  <table class="rage-table">
+    <tr class="rage-row">
+      <td><span class="level-badge" style="background: var(--green); color: #000">L1</span></td>
+      <td><span class="count-badge" style="color: var(--green)">5x</span></td>
+      <td>
+        <div class="expression" style="color: var(--green)">&laquo;&#1073;&#1083;&#1080;&#1085;&raquo;</div>
+        <div class="translation">"Hmm, that's not ideal"</div>
+        <div class="dots">
+          <span class="dot" style="background: var(--green)"></span>
+          <span class="dot" style="background: var(--green)"></span>
+          <span class="dot" style="background: var(--green)"></span>
+          <span class="dot" style="background: var(--green)"></span>
+          <span class="dot" style="background: var(--green)"></span>
+        </div>
+      </td>
+    </tr>
+    <tr class="rage-row">
+      <td><span class="level-badge" style="background: var(--yellow); color: #000">L2</span></td>
+      <td><span class="count-badge" style="color: var(--yellow)">10x</span></td>
+      <td>
+        <div class="expression" style="color: var(--yellow)">&laquo;&#1086;&#1087;&#1103;&#1090;&#1100; / &#1089;&#1085;&#1086;&#1074;&#1072; / &#1085;&#1091; &#1101;&#1090;&#1086; &#1078;&#1077;...&raquo;</div>
+        <div class="translation">"Did you even read my message?"</div>
+        <div class="dots">
+          <span class="dot" style="background: var(--yellow)"></span><span class="dot" style="background: var(--yellow)"></span><span class="dot" style="background: var(--yellow)"></span><span class="dot" style="background: var(--yellow)"></span><span class="dot" style="background: var(--yellow)"></span>
+          <span class="dot" style="background: var(--yellow)"></span><span class="dot" style="background: var(--yellow)"></span><span class="dot" style="background: var(--yellow)"></span><span class="dot" style="background: var(--yellow)"></span><span class="dot" style="background: var(--yellow)"></span>
+        </div>
+      </td>
+    </tr>
+    <tr class="rage-row">
+      <td><span class="level-badge" style="background: var(--orange); color: #000">L3</span></td>
+      <td><span class="count-badge" style="color: var(--orange)">12x</span></td>
+      <td>
+        <div class="expression" style="color: var(--orange)">&laquo;&#1073;&#1083;&#1103; / &#1095;&#1091;&#1074;&#1072;&#1082; / &#1076;&#1080;&#1095;&#1100;&raquo;<span class="most-common-badge">MOST COMMON</span></div>
+        <div class="translation">"Are you serious right now?"</div>
+        <div class="dots">
+          <span class="dot" style="background: var(--orange)"></span><span class="dot" style="background: var(--orange)"></span><span class="dot" style="background: var(--orange)"></span><span class="dot" style="background: var(--orange)"></span><span class="dot" style="background: var(--orange)"></span><span class="dot" style="background: var(--orange)"></span>
+          <span class="dot" style="background: var(--orange)"></span><span class="dot" style="background: var(--orange)"></span><span class="dot" style="background: var(--orange)"></span><span class="dot" style="background: var(--orange)"></span><span class="dot" style="background: var(--orange)"></span><span class="dot" style="background: var(--orange)"></span>
+        </div>
+      </td>
+    </tr>
+    <tr class="rage-row">
+      <td><span class="level-badge" style="background: var(--orange); color: #000">L3</span></td>
+      <td><span class="count-badge" style="color: var(--orange)">3x</span></td>
+      <td>
+        <div class="expression" style="color: var(--orange)">&laquo;&#1087;&#1088;&#1080;&#1082;&#1072;&#1083;&#1099;&#1074;&#1072;&#1077;&#1096;&#1100;&#1089;&#1103;?&raquo;</div>
+        <div class="translation">"You're kidding, right?"</div>
+        <div class="dots">
+          <span class="dot" style="background: var(--orange)"></span><span class="dot" style="background: var(--orange)"></span><span class="dot" style="background: var(--orange)"></span>
+        </div>
+      </td>
+    </tr>
+    <tr class="rage-row">
+      <td><span class="level-badge" style="background: var(--red); color: #000">L4</span></td>
+      <td><span class="count-badge" style="color: var(--red)">8x</span></td>
+      <td>
+        <div class="expression" style="color: var(--red)">&laquo;&#1073;&#1083;&#1103;&#1090;&#1100; / &#1087;&#1080;&#1079;&#1076;&#1077;&#1094; / &#1082;&#1072;&#1082;&#1086;&#1075;&#1086; &#1093;&#1077;&#1088;&#1072; / &#1085;&#1072;&#1093;&#1077;&#1088;&#1072;&raquo;</div>
+        <div class="translation">"Nuclear option activated"</div>
+        <div class="dots">
+          <span class="dot" style="background: var(--red)"></span><span class="dot" style="background: var(--red)"></span><span class="dot" style="background: var(--red)"></span><span class="dot" style="background: var(--red)"></span>
+          <span class="dot" style="background: var(--red)"></span><span class="dot" style="background: var(--red)"></span><span class="dot" style="background: var(--red)"></span><span class="dot" style="background: var(--red)"></span>
+        </div>
+      </td>
+    </tr>
+    <tr class="rage-row">
+      <td><span class="level-badge" style="background: var(--red); color: #000">L4</span></td>
+      <td><span class="count-badge" style="color: var(--red)">3x</span></td>
+      <td>
+        <div class="expression" style="color: var(--red)">&laquo;&#1079;&#1072;&#1077;&#1073;&#1072;&#1083;&#1089;&#1103; / &#1079;&#1072;&#1077;&#1073;&#1072;&#1083;&#1086;&raquo;</div>
+        <div class="translation">"System shutdown imminent"</div>
+        <div class="dots">
+          <span class="dot" style="background: var(--red)"></span><span class="dot" style="background: var(--red)"></span><span class="dot" style="background: var(--red)"></span>
+        </div>
+      </td>
+    </tr>
+    <tr class="rage-row">
+      <td><span class="level-badge" style="background: var(--pink); color: #000">L5</span></td>
+      <td><span class="count-badge" style="color: var(--pink)">2x</span></td>
+      <td>
+        <div class="expression" style="color: var(--pink)">&laquo;&#1053;&#1059; &#1055;&#1054;&#1063;&#1045;&#1052;&#1059;&#1059;&#1059;&#1059;???? / &#1058;&#1054;&#1051;&#1068;&#1050;&#1054; &#1063;&#1058;&#1054;&raquo;</div>
+        <div class="translation">&#x1F525; Keyboard in danger &#x1F525;</div>
+        <div class="dots">
+          <span class="dot" style="background: var(--pink)"></span><span class="dot" style="background: var(--pink)"></span>
+        </div>
+      </td>
+    </tr>
+    <tr class="rage-row">
+      <td><span class="level-badge" style="background: var(--pink); color: #000">L5</span></td>
+      <td><span class="count-badge" style="color: var(--pink)">1x</span></td>
+      <td>
+        <div class="expression" style="color: var(--pink)">&laquo;it's fucking not funny anymore&raquo;</div>
+        <div class="translation">"Language barrier: transcended"</div>
+        <div class="dots">
+          <span class="dot" style="background: var(--pink)"></span>
+        </div>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<!-- ==================== 04 — ROOT CAUSE ==================== -->
+<div class="section container" id="sec-triggers">
+  <div class="section-label">04 &mdash; Root Cause Analysis</div>
+  <div class="section-title">What Sets Me Off</div>
+
+  <div class="triggers-grid" id="triggers-grid">
+    <div class="trigger-card">
+      <div class="trigger-count" style="color: var(--red)">11</div>
+      <div class="trigger-info">
+        <div class="trigger-name">AI ignoring explicit instructions</div>
+        <div class="trigger-bar-track"><div class="trigger-bar-fill" data-width="100" style="background: var(--red)"></div></div>
       </div>
-      <div class="stat-card zen">
-        <span class="stat-emoji">🧘</span>
-        <div class="stat-value">77%</div>
-        <div class="stat-label">Zen mode (calm)</div>
+    </div>
+    <div class="trigger-card">
+      <div class="trigger-count" style="color: var(--orange)">6</div>
+      <div class="trigger-info">
+        <div class="trigger-name">AI losing context / forgetting</div>
+        <div class="trigger-bar-track"><div class="trigger-bar-fill" data-width="54.5" style="background: var(--orange)"></div></div>
       </div>
-      <div class="stat-card rage">
-        <span class="stat-emoji">😤</span>
-        <div class="stat-value">23%</div>
-        <div class="stat-label">Rage mode (frustrated)</div>
+    </div>
+    <div class="trigger-card">
+      <div class="trigger-count" style="color: var(--yellow)">5</div>
+      <div class="trigger-info">
+        <div class="trigger-name">Permission prompts hell &#x1F501;</div>
+        <div class="trigger-bar-track"><div class="trigger-bar-fill" data-width="45.5" style="background: var(--yellow)"></div></div>
       </div>
-      <div class="stat-card trauma">
-        <span class="stat-emoji">💀</span>
-        <div class="stat-value">4</div>
-        <div class="stat-label">Carry-over trauma<br><small style="color:#666">(started already angry)</small></div>
+    </div>
+    <div class="trigger-card">
+      <div class="trigger-count" style="color: var(--blue)">4</div>
+      <div class="trigger-info">
+        <div class="trigger-name">Test failures / broken code</div>
+        <div class="trigger-bar-track"><div class="trigger-bar-fill" data-width="36.4" style="background: var(--blue)"></div></div>
+      </div>
+    </div>
+    <div class="trigger-card">
+      <div class="trigger-count" style="color: var(--text-dim)">3</div>
+      <div class="trigger-info">
+        <div class="trigger-name">Other / combo triggers</div>
+        <div class="trigger-bar-track"><div class="trigger-bar-fill" data-width="27.3" style="background: var(--text-dim)"></div></div>
+      </div>
+    </div>
+    <div class="trigger-card">
+      <div class="trigger-count" style="color: var(--green)">1</div>
+      <div class="trigger-info">
+        <div class="trigger-name">Build failures</div>
+        <div class="trigger-bar-track"><div class="trigger-bar-fill" data-width="9.1" style="background: var(--green)"></div></div>
+      </div>
+    </div>
+    <div class="trigger-card">
+      <div class="trigger-count" style="color: var(--green)">1</div>
+      <div class="trigger-info">
+        <div class="trigger-name">Deploy issues</div>
+        <div class="trigger-bar-track"><div class="trigger-bar-fill" data-width="9.1" style="background: var(--green)"></div></div>
       </div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- ████ FRUSTRATION CURVE ████ -->
-<section>
-  <div class="container">
-    <div class="reveal">
-      <div class="section-title">02 — Timing</div>
-      <div class="section-heading">The Frustration Curve</div>
+<!-- ==================== 05 — HALL OF FAME ==================== -->
+<div class="section container" id="sec-fame">
+  <div class="section-label">05 &mdash; Hall of Fame</div>
+  <div class="section-title">Greatest Hits &#x1F480;</div>
+
+  <div class="quote-card gold">
+    <div class="quote-header">
+      <span class="quote-medal">&#x1F947;</span>
+      <span class="quote-title">Peak Rage</span>
+      <span class="quote-meta">&mdash; Mar 15, shelly-monitor</span>
     </div>
-    <div class="chart-container reveal" id="time-chart">
-      <div class="chart-title">How fast does the rage arrive?</div>
+    <div class="quote-text">&laquo;&#1053;&#1059; &#1055;&#1054;&#1063;&#1045;&#1052;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;&#1059;????&raquo;</div>
+    <div class="quote-context">Permission prompts meltdown, hour-long battle with allow rules &bull; Caps lock: YES &bull; &#1059; count: 40+ &bull; AI had just removed colons it was told to keep</div>
+  </div>
 
-      <div class="bar-row">
-        <div class="bar-label">0–10 min</div>
-        <div class="bar-track">
-          <div class="bar-fill" data-width="100%" style="background: var(--red);">8</div>
-        </div>
-        <span class="bar-tag speed">⚡ Speed Run</span>
-      </div>
-      <div class="bar-row">
-        <div class="bar-label">10–20 min</div>
-        <div class="bar-track">
-          <div class="bar-fill" data-width="12.5%" style="background: var(--orange);">1</div>
-        </div>
-      </div>
-      <div class="bar-row">
-        <div class="bar-label">20–30 min</div>
-        <div class="bar-track">
-          <div class="bar-fill" data-width="12.5%" style="background: var(--orange);">1</div>
-        </div>
-      </div>
-      <div class="bar-row">
-        <div class="bar-label">30–45 min</div>
-        <div class="bar-track">
-          <div class="bar-fill" data-width="50%" style="background: var(--yellow);">4</div>
-        </div>
-      </div>
-      <div class="bar-row">
-        <div class="bar-label">45–60 min</div>
-        <div class="bar-track">
-          <div class="bar-fill" data-width="37.5%" style="background: var(--yellow);">3</div>
-        </div>
-      </div>
-      <div class="bar-row">
-        <div class="bar-label">60–90 min</div>
-        <div class="bar-track">
-          <div class="bar-fill" data-width="25%" style="background: var(--blue);">2</div>
-        </div>
-        <span class="bar-tag slow">🐌 Slow Burn</span>
-      </div>
-      <div class="bar-row">
-        <div class="bar-label">@ start</div>
-        <div class="bar-track">
-          <div class="bar-fill" data-width="50%" style="background: var(--purple);">4</div>
-        </div>
-        <span class="bar-tag carry">😤 Carry-over</span>
-      </div>
+  <div class="quote-card silver">
+    <div class="quote-header">
+      <span class="quote-medal">&#x1F948;</span>
+      <span class="quote-title">Existential Crisis</span>
+      <span class="quote-meta">&mdash; Mar 20, atlantisplus</span>
+    </div>
+    <div class="quote-text">&laquo;&#1073;&#1083;&#1103;&#1090;&#1100; &#1095;&#1091;&#1074;&#1072;&#1082;, &#1072; &#1095;&#1090;&#1086; &#1089;&#1083;&#1091;&#1095;&#1080;&#1083;&#1086;&#1089;&#1100;, &#1087;&#1086;&#1095;&#1077;&#1084;&#1091; &#1090;&#1099; &#1090;&#1072;&#1082;&#1086;&#1081; &#1090;&#1091;&#1087;&#1086;&#1081; &#1089;&#1090;&#1072;&#1083;? &#1084;&#1086;&#1078;&#1077;&#1090; &#1103; &#1082;&#1072;&#1082;&#1091;&#1102;-&#1090;&#1086; &#1085;&#1072;&#1089;&#1090;&#1088;&#1086;&#1081;&#1082;&#1091; &#1074;&#1099;&#1082;&#1083;&#1102;&#1095;&#1080;&#1083;? &#1084;&#1099; &#1089; &#1090;&#1086;&#1073;&#1086;&#1081; &#1090;&#1091;&#1090; &#1089;&#1088;&#1105;&#1084;&#1089;&#1103; &#1080;&#1079;-&#1079;&#1072; &#1101;&#1090;&#1086;&#1075;&#1086; &#1080; &#1090;&#1099; &#1085;&#1072; &#1075;&#1086;&#1083;&#1091;&#1073;&#1086;&#1084; &#1075;&#1083;&#1072;&#1079;&#1091; &#1089;&#1085;&#1086;&#1074;&#1072; &#1084;&#1085;&#1077; &#1101;&#1090;&#1091; &#1083;&#1072;&#1078;&#1091; &#1087;&#1086;&#1082;&#1072;&#1079;&#1099;&#1074;&#1072;&#1077;&#1096;&#1100;&raquo;</div>
+    <div class="quote-context">Simple SQL found 25 people, AI found 6 &bull; User questioned if AI had regressed to 2023 model &bull; Trust level: negative</div>
+  </div>
+
+  <div class="quote-card bronze">
+    <div class="quote-header">
+      <span class="quote-medal">&#x1F949;</span>
+      <span class="quote-title">Bilingual Rage</span>
+      <span class="quote-meta">&mdash; Mar 23, atlantisplus</span>
+    </div>
+    <div class="quote-text">&laquo;it's fucking not funny anymore, &#1085;&#1091; &#1089;&#1077;&#1088;&#1100;&#1105;&#1079;&#1085;&#1086;!!!&raquo;</div>
+    <div class="quote-context">Hours stuck on step 1 of test scenario &bull; First message of new session &bull; Language barrier: transcended</div>
+  </div>
+
+  <div style="margin-top: 32px; margin-bottom: 8px;">
+    <div class="section-label" style="margin-bottom: 16px;">Honorable Mentions</div>
+  </div>
+
+  <div class="quote-card honorable">
+    <div class="quote-header">
+      <span class="quote-medal" style="font-size: 14px; color: var(--text-dim)">4th</span>
+      <span class="quote-title">Professional Standards</span>
+      <span class="quote-meta">&mdash; Feb 26</span>
+    </div>
+    <div class="quote-text">&laquo;&#1063;&#1090;&#1086; &#1101;&#1090;&#1086; &#1079;&#1072; &#1093;&#1077;&#1088;&#1085;&#1103; &#1080; &#1085;&#1077;&#1087;&#1088;&#1086;&#1092;&#1077;&#1089;&#1089;&#1080;&#1086;&#1085;&#1072;&#1083;&#1080;&#1079;&#1084;?&raquo;</div>
+    <div class="quote-context">AI patching patches on patches instead of finding root cause</div>
+  </div>
+
+  <div class="quote-card honorable">
+    <div class="quote-header">
+      <span class="quote-medal" style="font-size: 14px; color: var(--text-dim)">5th</span>
+      <span class="quote-title">Meta-Rage</span>
+      <span class="quote-meta">&mdash; Mar 23</span>
+    </div>
+    <div class="quote-text">&laquo;&#1090;&#1072;&#1082;, &#1082;&#1072;&#1078;&#1077;&#1090;&#1089;&#1103; &#1089;&#1082;&#1086;&#1088;&#1086; &#1077;&#1097;&#1077; &#1086;&#1076;&#1085;&#1080;&#1084; &lsquo;&#1073;&#1083;&#1103;&#1090;&#1100;&rsquo; &#1073;&#1091;&#1076;&#1077;&#1090; &#1073;&#1086;&#1083;&#1100;&#1096;&#1077;. &#1085;&#1077; &#1088;&#1072;&#1073;&#1086;&#1090;&#1072;&#1077;&#1090;&raquo;</div>
+    <div class="quote-context">Meta-moment: deploying the rage dashboard itself caused rage</div>
+  </div>
+</div>
+
+<!-- ==================== 06 — CALENDAR ==================== -->
+<div class="section container" id="sec-calendar">
+  <div class="section-label">06 &mdash; Calendar</div>
+  <div class="section-title">Heatmap of Pain</div>
+
+  <div class="calendar-grid" id="calendar">
+    <!-- Headers -->
+    <div class="cal-header">MON</div>
+    <div class="cal-header">TUE</div>
+    <div class="cal-header">WED</div>
+    <div class="cal-header">THU</div>
+    <div class="cal-header">FRI</div>
+    <div class="cal-header">SAT</div>
+    <div class="cal-header">SUN</div>
+
+    <!-- Week 1: Feb 23 (Mon) to Mar 1 (Sun) -->
+    <div class="cal-month-label">FEBRUARY</div>
+    <div class="cal-day outside calm"><span class="day-num">23</span></div>
+    <div class="cal-day calm"><span class="day-num">24</span><span class="day-count">0</span><span class="tooltip">Feb 24 &mdash; 0 rage</span></div>
+    <div class="cal-day calm"><span class="day-num">25</span><span class="day-count">0</span><span class="tooltip">Feb 25 &mdash; 0 rage</span></div>
+    <div class="cal-day hot1"><span class="day-num">26</span><span class="day-count">1</span><span class="tooltip">Feb 26 &mdash; 1 rage</span></div>
+    <div class="cal-day calm"><span class="day-num">27</span><span class="day-count">0</span><span class="tooltip">Feb 27 &mdash; 0 rage</span></div>
+    <div class="cal-day calm"><span class="day-num">28</span><span class="day-count">0</span><span class="tooltip">Feb 28 &mdash; 0 rage</span></div>
+    <div class="cal-day hot1"><span class="day-num">1</span><span class="day-count">1</span><span class="tooltip">Mar 1 &mdash; 1 rage</span></div>
+
+    <!-- Week 2: Mar 2 (Mon) to Mar 8 (Sun) -->
+    <div class="cal-month-label">MARCH</div>
+    <div class="cal-day calm"><span class="day-num">2</span><span class="day-count">0</span><span class="tooltip">Mar 2 &mdash; 0 rage</span></div>
+    <div class="cal-day calm"><span class="day-num">3</span><span class="day-count">0</span><span class="tooltip">Mar 3 &mdash; 0 rage</span></div>
+    <div class="cal-day calm"><span class="day-num">4</span><span class="day-count">0</span><span class="tooltip">Mar 4 &mdash; 0 rage</span></div>
+    <div class="cal-day hot1"><span class="day-num">5</span><span class="day-count">1</span><span class="tooltip">Mar 5 &mdash; 1 rage</span></div>
+    <div class="cal-day calm"><span class="day-num">6</span><span class="day-count">0</span><span class="tooltip">Mar 6 &mdash; 0 rage</span></div>
+    <div class="cal-day calm"><span class="day-num">7</span><span class="day-count">0</span><span class="tooltip">Mar 7 &mdash; 0 rage</span></div>
+    <div class="cal-day calm"><span class="day-num">8</span><span class="day-count">0</span><span class="tooltip">Mar 8 &mdash; 0 rage</span></div>
+
+    <!-- Week 3: Mar 9 (Mon) to Mar 15 (Sun) -->
+    <div class="cal-day calm"><span class="day-num">9</span><span class="day-count">0</span><span class="tooltip">Mar 9 &mdash; 0 rage</span></div>
+    <div class="cal-day calm"><span class="day-num">10</span><span class="day-count">0</span><span class="tooltip">Mar 10 &mdash; 0 rage</span></div>
+    <div class="cal-day calm"><span class="day-num">11</span><span class="day-count">0</span><span class="tooltip">Mar 11 &mdash; 0 rage</span></div>
+    <div class="cal-day hot1"><span class="day-num">12</span><span class="day-count">1</span><span class="tooltip">Mar 12 &mdash; 1 rage</span></div>
+    <div class="cal-day hot1"><span class="day-num">13</span><span class="day-count">2</span><span class="tooltip">Mar 13 &mdash; 2 rage</span></div>
+    <div class="cal-day hot1"><span class="day-num">14</span><span class="day-count">1</span><span class="tooltip">Mar 14 &mdash; 1 rage</span></div>
+    <div class="cal-day hot3"><span class="day-num">15</span><span class="day-count">5</span><span class="fire">&#x1F525;</span><span class="tooltip">Mar 15 &mdash; 5 rage &#x1F525; Permission Hell Day</span></div>
+
+    <!-- Week 4: Mar 16 (Mon) to Mar 22 (Sun) -->
+    <div class="cal-day calm"><span class="day-num">16</span><span class="day-count">0</span><span class="tooltip">Mar 16 &mdash; 0 rage</span></div>
+    <div class="cal-day calm"><span class="day-num">17</span><span class="day-count">0</span><span class="tooltip">Mar 17 &mdash; 0 rage</span></div>
+    <div class="cal-day calm"><span class="day-num">18</span><span class="day-count">0</span><span class="tooltip">Mar 18 &mdash; 0 rage</span></div>
+    <div class="cal-day hot1"><span class="day-num">19</span><span class="day-count">2</span><span class="tooltip">Mar 19 &mdash; 2 rage</span></div>
+    <div class="cal-day hot3"><span class="day-num">20</span><span class="day-count">5</span><span class="fire">&#x1F525;</span><span class="tooltip">Mar 20 &mdash; 5 rage &#x1F525; Test Debugging Inferno</span></div>
+    <div class="cal-day hot1"><span class="day-num">21</span><span class="day-count">1</span><span class="tooltip">Mar 21 &mdash; 1 rage</span></div>
+    <div class="cal-day calm"><span class="day-num">22</span><span class="day-count">0</span><span class="tooltip">Mar 22 &mdash; 0 rage</span></div>
+
+    <!-- Week 5: Mar 23 (Mon) to Mar 29 (Sun) -->
+    <div class="cal-day hot3"><span class="day-num">23</span><span class="day-count">5</span><span class="fire">&#x1F525;</span><span class="tooltip">Mar 23 &mdash; 5 rage &#x1F525; Happy Path Disaster</span></div>
+    <div class="cal-day hot1"><span class="day-num">24</span><span class="day-count">2</span><span class="tooltip">Mar 24 &mdash; 2 rage</span></div>
+    <div class="cal-day hot2"><span class="day-num">25</span><span class="day-count">4</span><span class="tooltip">Mar 25 &mdash; 4 rage &mdash; Architecture Purgatory</span></div>
+    <div class="cal-day calm"><span class="day-num">26</span><span class="day-count">0</span><span class="tooltip">Mar 26 &mdash; 0 rage</span></div>
+    <div class="cal-day outside calm"><span class="day-num">27</span></div>
+    <div class="cal-day outside calm"><span class="day-num">28</span></div>
+    <div class="cal-day outside calm"><span class="day-num">29</span></div>
+  </div>
+</div>
+
+<!-- ==================== 07 — BY PROJECT ==================== -->
+<div class="section container" id="sec-projects">
+  <div class="section-label">07 &mdash; By Project</div>
+  <div class="section-title">Where The Pain Lives</div>
+
+  <div id="project-chart">
+    <div class="project-row">
+      <div class="project-name">atlantisplus</div>
+      <div class="project-track"><div class="project-fill" data-width="100" style="background: var(--red)"><span class="project-count">24</span></div></div>
+    </div>
+    <div class="project-row">
+      <div class="project-name">shelly-monitor</div>
+      <div class="project-track"><div class="project-fill" data-width="20.8" style="background: var(--orange)"><span class="project-count">5</span></div></div>
+    </div>
+    <div class="project-row">
+      <div class="project-name">metadispatch</div>
+      <div class="project-track"><div class="project-fill" data-width="8.3" style="background: var(--yellow)"><span class="project-count">2</span></div></div>
     </div>
   </div>
-</section>
+</div>
 
-<!-- ████ RAGE SCALE ████ -->
-<section>
-  <div class="container">
-    <div class="reveal">
-      <div class="section-title">03 — Intensity</div>
-      <div class="section-heading">The Richter Scale of Rage</div>
-    </div>
-    <div class="rage-scale reveal">
+<!-- ==================== FOOTER — THE PATTERN ==================== -->
+<div class="section container" id="sec-footer" style="text-align: center;">
+  <div class="section-label">The Pattern&trade;</div>
+  <div class="section-title" style="margin-bottom: 32px;">How It Always Goes</div>
 
-      <div class="rage-level l1">
-        <div class="count">4x</div>
-        <div class="words">"блин"</div>
-        <div class="translation">Hmm, that's not ideal</div>
-        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-      </div>
-
-      <div class="rage-level l1">
-        <div class="count">2x</div>
-        <div class="words">"ну это же..."</div>
-        <div class="translation">Did you even read my message?</div>
-        <div class="dots"><div class="dot"></div><div class="dot"></div></div>
-      </div>
-
-      <div class="rage-level l2">
-        <div class="count">1x</div>
-        <div class="words">"опять"</div>
-        <div class="translation">We've been through this</div>
-        <div class="dots"><div class="dot"></div></div>
-      </div>
-
-      <div class="rage-level l3">
-        <div class="count" style="position:relative">9x<span class="most-common">MOST COMMON</span></div>
-        <div class="words">"бля / чувак"</div>
-        <div class="translation">Are you serious right now?</div>
-        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-      </div>
-
-      <div class="rage-level l3">
-        <div class="count">1x</div>
-        <div class="words">"я очень разочарован"</div>
-        <div class="translation">I'm done with this session</div>
-        <div class="dots"><div class="dot"></div></div>
-      </div>
-
-      <div class="rage-level l4">
-        <div class="count">3x</div>
-        <div class="words">"какого хера"</div>
-        <div class="translation">What the actual...</div>
-        <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
-      </div>
-
-      <div class="rage-level l4">
-        <div class="count">2x</div>
-        <div class="words">"блять / пиздец"</div>
-        <div class="translation">Nuclear option activated</div>
-        <div class="dots"><div class="dot"></div><div class="dot"></div></div>
-      </div>
-
-      <div class="rage-level l5">
-        <div class="count">1x</div>
-        <div class="words">"НУ ПОЧЕМУУУУУ????"</div>
-        <div class="translation">🔥 Keyboard in danger 🔥</div>
-        <div class="dots"><div class="dot" style="width:12px;height:12px;animation-duration:0.5s"></div></div>
-      </div>
-
-    </div>
+  <div class="pattern-flow">
+    <span class="pattern-step" style="color: var(--green)">Work calmly for 27 min</span>
+    <span class="pattern-arrow">&rarr;</span>
+    <span class="pattern-step" style="color: var(--yellow)">AI ignores instruction</span>
+    <span class="pattern-arrow">&rarr;</span>
+    <span class="pattern-step" style="color: var(--yellow)">&laquo;&#1073;&#1083;&#1080;&#1085;&raquo;</span>
+    <span class="pattern-arrow">&rarr;</span>
+    <span class="pattern-step" style="color: var(--orange)">AI does it again</span>
+    <span class="pattern-arrow">&rarr;</span>
+    <span class="pattern-step" style="color: var(--orange)">&laquo;&#1073;&#1083;&#1103; &#1095;&#1091;&#1074;&#1072;&#1082;&raquo;</span>
+    <span class="pattern-arrow">&rarr;</span>
+    <span class="pattern-step" style="color: var(--red)">5 more min</span>
+    <span class="pattern-arrow">&rarr;</span>
+    <span class="pattern-step" style="color: var(--red)">full &#1084;&#1072;&#1090;</span>
+    <span class="pattern-arrow">&rarr;</span>
+    <span class="pattern-step" style="color: var(--purple)">carry-over to next session</span>
+    <span class="pattern-arrow">&rarr;</span>
+    <span class="pattern-step" style="color: var(--text-dim)">repeat</span>
   </div>
-</section>
 
-<!-- ████ TRIGGERS ████ -->
-<section>
-  <div class="container">
-    <div class="reveal">
-      <div class="section-title">04 — Root Cause Analysis</div>
-      <div class="section-heading">What Sets Me Off</div>
-    </div>
-    <div class="triggers-grid reveal">
-      <div class="trigger-item">
-        <div class="trigger-count">6</div>
-        <div>
-          <div class="trigger-name">Build failures / broken code / regressions</div>
-          <div class="trigger-bar" style="width: 100%;"></div>
-        </div>
-      </div>
-      <div class="trigger-item">
-        <div class="trigger-count">5</div>
-        <div>
-          <div class="trigger-name">AI ignoring explicit instructions</div>
-          <div class="trigger-bar" style="width: 83%;"></div>
-        </div>
-      </div>
-      <div class="trigger-item">
-        <div class="trigger-count">5</div>
-        <div>
-          <div class="trigger-name">Other / combo triggers</div>
-          <div class="trigger-bar" style="width: 83%;"></div>
-        </div>
-      </div>
-      <div class="trigger-item">
-        <div class="trigger-count">4</div>
-        <div>
-          <div class="trigger-name">Permission prompts hell 🔁</div>
-          <div class="trigger-bar" style="width: 67%;"></div>
-        </div>
-      </div>
-      <div class="trigger-item">
-        <div class="trigger-count">1</div>
-        <div>
-          <div class="trigger-name">AI not searching web when asked</div>
-          <div class="trigger-bar" style="width: 17%;"></div>
-        </div>
-      </div>
-      <div class="trigger-item">
-        <div class="trigger-count">1</div>
-        <div>
-          <div class="trigger-name">AI losing context / forgetting</div>
-          <div class="trigger-bar" style="width: 17%;"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ████ HALL OF FAME ████ -->
-<section>
-  <div class="container">
-    <div class="reveal">
-      <div class="section-title">05 — Hall of Fame</div>
-      <div class="section-heading">Greatest Hits 💀</div>
-    </div>
-    <div class="hall-of-fame reveal">
-      <div class="quote-card">
-        <div class="rank">🥇 Peak Rage — Mar 15, shelly-monitor</div>
-        <div class="quote-text">"НУ ПОЧЕМУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУУ????"</div>
-        <div class="quote-meta">Context: permission prompts meltdown, session 65, minute 46 • Caps lock: yes • У count: 40+</div>
-      </div>
-      <div class="quote-card">
-        <div class="rank">🥈 Existential Crisis — Mar 20, atlantisplus</div>
-        <div class="quote-text">"блять чувак, а что случилось, почему ты такой тупой стал?"</div>
-        <div class="quote-meta">Context: AI couldn't understand test purpose after 80 min of work • Trust level: zero</div>
-      </div>
-      <div class="quote-card">
-        <div class="rank">🥉 Bilingual Rage — Mar 23, atlantisplus</div>
-        <div class="quote-text">"it's fucking not funny anymore, ну серьёзно!!!"</div>
-        <div class="quote-meta">Context: hours stuck on step 1 of test scenario • Language barrier: transcended</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ████ CALENDAR ████ -->
-<section>
-  <div class="container">
-    <div class="reveal">
-      <div class="section-title">06 — Calendar</div>
-      <div class="section-heading">March 2026 — Heatmap of Pain</div>
-    </div>
-    <div class="calendar reveal">
-      <div class="cal-grid">
-        <div class="cal-header">Mon</div>
-        <div class="cal-header">Tue</div>
-        <div class="cal-header">Wed</div>
-        <div class="cal-header">Thu</div>
-        <div class="cal-header">Fri</div>
-        <div class="cal-header">Sat</div>
-        <div class="cal-header">Sun</div>
-
-        <!-- Week 1: Mar 1 = Sun -->
-        <div class="cal-day empty"></div>
-        <div class="cal-day empty"></div>
-        <div class="cal-day empty"></div>
-        <div class="cal-day empty"></div>
-        <div class="cal-day empty"></div>
-        <div class="cal-day empty"></div>
-        <div class="cal-day calm">1</div>
-
-        <!-- Week 2 -->
-        <div class="cal-day calm">2</div>
-        <div class="cal-day calm">3</div>
-        <div class="cal-day calm">4</div>
-        <div class="cal-day calm">5</div>
-        <div class="cal-day calm">6</div>
-        <div class="cal-day calm">7</div>
-        <div class="cal-day calm">8</div>
-
-        <!-- Week 3 -->
-        <div class="cal-day calm">9<div class="cal-tooltip">1 frustrated session</div></div>
-        <div class="cal-day calm">10</div>
-        <div class="cal-day calm">11</div>
-        <div class="cal-day calm">12</div>
-        <div class="cal-day hot1">13<div class="cal-badge">×2</div><div class="cal-tooltip">2 frustrated sessions</div></div>
-        <div class="cal-day hot1">14<div class="cal-badge">×2</div><div class="cal-tooltip">2 frustrated sessions</div></div>
-        <div class="cal-day hot3">15<div class="cal-badge">×6 🔥</div><div class="cal-tooltip">6 frustrated sessions — "Permission Hell"</div></div>
-
-        <!-- Week 4 -->
-        <div class="cal-day calm">16</div>
-        <div class="cal-day calm">17</div>
-        <div class="cal-day calm">18</div>
-        <div class="cal-day hot1">19<div class="cal-badge">×2</div><div class="cal-tooltip">2 frustrated sessions</div></div>
-        <div class="cal-day hot2">20<div class="cal-badge">×3</div><div class="cal-tooltip">3 frustrated sessions — test debugging</div></div>
-        <div class="cal-day calm">21<div class="cal-tooltip">1 frustrated session</div></div>
-        <div class="cal-day calm">22</div>
-
-        <!-- Week 5 -->
-        <div class="cal-day hot2">23<div class="cal-badge">×3 ⚡</div><div class="cal-tooltip">3 frustrated sessions — "still going"</div></div>
-        <div class="cal-day calm" style="opacity:0.3">24</div>
-        <div class="cal-day calm" style="opacity:0.3">25</div>
-        <div class="cal-day calm" style="opacity:0.3">26</div>
-        <div class="cal-day calm" style="opacity:0.3">27</div>
-        <div class="cal-day calm" style="opacity:0.3">28</div>
-        <div class="cal-day calm" style="opacity:0.3">29</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ████ BY PROJECT ████ -->
-<section>
-  <div class="container">
-    <div class="reveal">
-      <div class="section-title">07 — By Project</div>
-      <div class="section-heading">Where The Pain Lives</div>
-    </div>
-    <div class="project-bars reveal" id="proj-chart">
-      <div class="proj-row">
-        <div class="proj-name">atlantisplus</div>
-        <div class="proj-bar" data-width="100%">15</div>
-      </div>
-      <div class="proj-row">
-        <div class="proj-name">shelly-monitor</div>
-        <div class="proj-bar" data-width="27%">4</div>
-      </div>
-      <div class="proj-row">
-        <div class="proj-name">metadispatch</div>
-        <div class="proj-bar" data-width="20%">3</div>
-      </div>
-      <div class="proj-row">
-        <div class="proj-name">Projects</div>
-        <div class="proj-bar" data-width="7%">1</div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ████ FOOTER ████ -->
-<div class="footer">
-  <div class="reveal">
-    <div class="section-title" style="margin-bottom:24px">The Pattern™</div>
-    <div class="pattern">
-      <span class="stage1">Work calmly for 25 min</span>
-      <span class="arrow"> → </span>
-      something breaks
-      <span class="arrow"> → </span>
-      <span class="stage2">"блин"</span>
-      <span class="arrow"> → </span>
-      5 min later
-      <span class="arrow"> → </span>
-      <span class="stage3">"бля"</span>
-      <span class="arrow"> → </span>
-      5 more min
-      <span class="arrow"> → </span>
-      <span class="stage4">full мат</span>
-      <span class="arrow"> → </span>
-      repeat.
-    </div>
-    <div class="disclaimer">
-      Generated by the very AI that caused 23% of these sessions.<br>
-      No keyboards were harmed in the making of this report. Probably.
-    </div>
+  <div class="disclaimer">
+    Generated by the very AI that caused 55% of these sessions (ai_ignoring_instructions + ai_losing_context).<br>
+    No keyboards were harmed in the making of this report. Probably.
   </div>
 </div>
 
 <script>
-// ── Scroll reveal ──
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      e.target.classList.add('visible');
-      // Animate bars when chart becomes visible
-      if (e.target.id === 'time-chart' || e.target.id === 'proj-chart') {
-        e.target.querySelectorAll('[data-width]').forEach((bar, i) => {
-          setTimeout(() => {
-            bar.style.width = bar.dataset.width;
-          }, i * 100);
-        });
-      }
+(function() {
+  'use strict';
+
+  // ========== Hero counter animation ==========
+  function easeOutCubic(t) {
+    return 1 - Math.pow(1 - t, 3);
+  }
+
+  function animateCounter(el, target, duration) {
+    var start = performance.now();
+    function tick(now) {
+      var elapsed = now - start;
+      var progress = Math.min(elapsed / duration, 1);
+      var value = Math.round(easeOutCubic(progress) * target);
+      el.textContent = value;
+      if (progress < 1) requestAnimationFrame(tick);
     }
+    requestAnimationFrame(tick);
+  }
+
+  // Start counter animation on load
+  window.addEventListener('load', function() {
+    var counter = document.getElementById('hero-counter');
+    if (counter) animateCounter(counter, 27, 2000);
   });
-}, { threshold: 0.15 });
 
-document.querySelectorAll('.reveal, #time-chart, #proj-chart').forEach(el => observer.observe(el));
+  // ========== Mouse parallax on hero ==========
+  var hero = document.getElementById('hero');
+  if (hero) {
+    hero.addEventListener('mousemove', function(e) {
+      var rect = hero.getBoundingClientRect();
+      var x = (e.clientX - rect.left) / rect.width - 0.5;
+      var y = (e.clientY - rect.top) / rect.height - 0.5;
+      var h1 = hero.querySelector('h1');
+      var num = hero.querySelector('.hero-number');
+      if (h1) h1.style.transform = 'translate(' + (x * 12) + 'px, ' + (y * 8) + 'px)';
+      if (num) num.style.transform = 'translate(' + (x * -8) + 'px, ' + (y * -6) + 'px)';
+    });
+  }
 
-// ── Hero counter animation ──
-const counter = document.getElementById('hero-counter');
-let start = 0;
-const end = 25;
-const duration = 2000;
-const startTime = performance.now();
+  // ========== Scroll reveal with IntersectionObserver ==========
+  var sections = document.querySelectorAll('.section');
+  var revealObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
 
-function animateCounter(now) {
-  const elapsed = now - startTime;
-  const progress = Math.min(elapsed / duration, 1);
-  const eased = 1 - Math.pow(1 - progress, 3);
-  counter.textContent = Math.round(eased * end);
-  if (progress < 1) requestAnimationFrame(animateCounter);
-}
-requestAnimationFrame(animateCounter);
+  sections.forEach(function(s) { revealObserver.observe(s); });
 
-// ── Subtle parallax on hero ──
-document.addEventListener('mousemove', (e) => {
-  const hero = document.querySelector('.hero');
-  if (!hero) return;
-  const rect = hero.getBoundingClientRect();
-  if (rect.bottom < 0) return;
-  const x = (e.clientX / window.innerWidth - 0.5) * 20;
-  const y = (e.clientY / window.innerHeight - 0.5) * 20;
-  hero.querySelector('.hero-number').style.transform = `translate(${x * 0.3}px, ${y * 0.3}px)`;
-});
+  // ========== Bar chart animation on scroll ==========
+  function animateBars(container) {
+    var fills = container.querySelectorAll('[data-width]');
+    fills.forEach(function(fill) {
+      fill.style.width = fill.getAttribute('data-width') + '%';
+    });
+  }
+
+  var charts = document.querySelectorAll('#frustration-chart, #triggers-grid, #project-chart');
+  var chartObserver = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        setTimeout(function() { animateBars(entry.target); }, 300);
+        chartObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  charts.forEach(function(c) { chartObserver.observe(c); });
+})();
 </script>
 </body>
 </html>
